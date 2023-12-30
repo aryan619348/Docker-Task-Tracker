@@ -1,5 +1,5 @@
 # Task-Tracker Project
-This project is a simple Task Tracker application built to demonstrate the usage of Docker volumes.
+This project is a simple Task Tracker application built to demonstrate the usage of **Docker volumes.**
 
 ### Deployed to Azure at : https://task-tracker.azurewebsites.net/
 
