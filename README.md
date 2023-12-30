@@ -30,7 +30,7 @@ This command will start the application in detached mode, and you can access it 
 
 
 To stop the application, use the following command:
-    ```bash
+
     docker-compose down
 
 
