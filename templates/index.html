@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Task Tracker</h1>
+        <form action="/add" method="post" class="task-form">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description">
+            <button type="submit">Add Task</button>
+        </form>
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li id="task-{{ task.id }}">
+                    <div class="task-info">
+                        <span class="task-title">{{ task.title }}</span>
+                        <span class="task-description">{{ task.description }}</span>
+                    </div>
+                    {% if not task.completed %}
+                        <a href="/complete/{{ task.id }}" class="task-action complete">Complete</a>
+                    {% endif %}
+                    <a href="#" class="task-action edit" onclick="toggleEdit({{ task.id }})">Edit</a>
+                    <a href="/delete/{{ task.id }}" class="task-action delete">Delete</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function toggleEdit(taskId) {
+        const taskElement = document.getElementById(`task-${taskId}`);
+        const taskInfo = taskElement.querySelector('.task-info');
+        
+        const editedTitle = taskInfo.dataset.title || '';
+        const editedDescription = taskInfo.dataset.description || '';
+
+        taskInfo.innerHTML = `
+            <label for="editedTitle">Edited Title:</label>
+            <input type="text" id="editedTitle" name="editedTitle" required value="${editedTitle}">
+            <label for="editedDescription">Edited Description:</label>
+            <input type="text" id="editedDescription" name="editedDescription" value="${editedDescription}">
+            <button type="button" onclick="saveEdit(${taskId})">Save</button>
+            <button type="button" onclick="cancelEdit(${taskId})">Cancel</button>
+        `;
+    }
+
+    function saveEdit(taskId) {
+    const editedTitle = document.getElementById(`editedTitle`).value;
+    const editedDescription = document.getElementById(`editedDescription`).value;
+
+    // Prepare the data to be sent to the server
+    const formData = new FormData();
+    formData.append('taskId', taskId);
+    formData.append('editedTitle', editedTitle);
+    formData.append('editedDescription', editedDescription);
+
+    // Send a POST request to the server
+    fetch('/update_task', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(`Server response: ${data.message}`);
+        // Optionally, you can reload the page or update the UI based on the server response
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+    function cancelEdit(taskId) {
+        // For simplicity, this example just reloads the page to cancel the edit
+        location.reload();
+    }
+    </script>
+</body>
+</html>

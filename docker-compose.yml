@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    image: "aryanspillai/task-tracker:latest"
+    build: .
+    ports:
+      - "80:8000"
+    volumes:
+      - app-data:/tmp
+
+volumes:
+  app-data:
